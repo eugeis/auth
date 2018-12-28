@@ -3,7 +3,7 @@ package auth
 import ee.design.*
 import ee.lang.*
 
-object Auth : Module({ namespace("auth") }) {
+object Auth : Module({ namespace("ee.auth") }) {
     object PersonName : Basic() {
         val first = propS()
         val last = propS()
