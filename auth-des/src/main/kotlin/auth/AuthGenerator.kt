@@ -3,12 +3,12 @@ package auth
 import ee.design.gen.go.DesignGoGenerator
 import ee.lang.integ.dPath
 
-fun main(args: Array<String>) {
+fun main() {
     generateGo()
 }
 
 fun generateGo() {
-    var generator = DesignGoGenerator(Auth)
-    generator.generate(dPath)
+    val generator = DesignGoGenerator(Auth, true)
+    generator.generate(dPath, generator.generatorFactory.goEventDriven())
 }
 

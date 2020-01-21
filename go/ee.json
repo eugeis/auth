@@ -1,0 +1,48 @@
+{
+  "files" : {
+    "auth/go/src/ee/auth/authIfcBase.go" : {
+      "path" : "auth/go/src/ee/auth/authIfcBase.go",
+      "date" : 1579620855000
+    },
+    "auth/go/src/ee/auth/authApiBase.go" : {
+      "path" : "auth/go/src/ee/auth/authApiBase.go",
+      "date" : 1579620855000
+    },
+    "auth/go/src/ee/auth/authTestBase.go" : {
+      "path" : "auth/go/src/ee/auth/authTestBase.go",
+      "date" : 1579620855000
+    },
+    "auth/go/src/ee/auth/authCommandsBase.go" : {
+      "path" : "auth/go/src/ee/auth/authCommandsBase.go",
+      "date" : 1579620855000
+    },
+    "auth/go/src/ee/auth/authEventsBase.go" : {
+      "path" : "auth/go/src/ee/auth/authEventsBase.go",
+      "date" : 1579620855000
+    },
+    "auth/go/src/ee/auth/authAggregateBase.go" : {
+      "path" : "auth/go/src/ee/auth/authAggregateBase.go",
+      "date" : 1579620855000
+    },
+    "auth/go/src/ee/auth/authQueryBase.go" : {
+      "path" : "auth/go/src/ee/auth/authQueryBase.go",
+      "date" : 1579620855000
+    },
+    "auth/go/src/ee/auth/authHttpBase.go" : {
+      "path" : "auth/go/src/ee/auth/authHttpBase.go",
+      "date" : 1579620855000
+    },
+    "auth/go/src/ee/auth/authClientBase.go" : {
+      "path" : "auth/go/src/ee/auth/authClientBase.go",
+      "date" : 1579620855000
+    },
+    "auth/go/src/ee/auth/authCliBase.go" : {
+      "path" : "auth/go/src/ee/auth/authCliBase.go",
+      "date" : 1579620855000
+    },
+    "auth/go/src/ee/auth/authStateMachineBase.go" : {
+      "path" : "auth/go/src/ee/auth/authStateMachineBase.go",
+      "date" : 1579620855000
+    }
+  }
+}

@@ -1,3 +1,0 @@
-[submodule "auth/src/main/go/src/ee/auth"]
-	path = auth/src/main/go/src/ee/auth
-	url = https://github.com/go-ee/auth
