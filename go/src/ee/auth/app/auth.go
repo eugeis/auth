@@ -1,8 +1,8 @@
 package app
 
 import (
-	"errors"
 	"ee/auth"
+	"errors"
 	"github.com/go-ee/utils/crypt"
 	"github.com/go-ee/utils/eh/app"
 	"github.com/go-ee/utils/net"
@@ -36,7 +36,7 @@ func (o *Auth) Start() (err error) {
 		o.Jwt = o.initJwtController(authRouter.AccountRouter.QueryHandler.QueryRepository)
 	}
 
-	o.StartServer()
+	err = o.StartServer()
 	return
 }
 
