@@ -1,22 +1,33 @@
 package auth
 
+
 type AccountCli struct {
 }
 
 func NewAccountCliDefault() (ret *AccountCli) {
-	ret = &AccountCli{}
-	return
+    ret = &AccountCli{}
+    return
 }
 
+
 type AuthCli struct {
-	AccountCli *AccountCli
+    AccountCli *AccountCli
 }
 
 func NewAuthCli() (ret *AuthCli) {
-
-	accountCli := NewAccountCliDefault()
-	ret = &AuthCli{
-		AccountCli: accountCli,
-	}
-	return
+        
+    accountCli := NewAccountCliDefault()
+    ret = &AuthCli{
+        AccountCli: accountCli,
+    }
+    return
 }
+
+
+
+
+
+
+
+
+

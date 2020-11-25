@@ -43,6 +43,46 @@
     "auth/go/src/ee/auth/authStateMachineBase.go" : {
       "path" : "auth/go/src/ee/auth/authStateMachineBase.go",
       "date" : 1579620855000
+    },
+    "auth/go/src/ee/auth/auth_api_base.go" : {
+      "path" : "auth/go/src/ee/auth/auth_api_base.go",
+      "date" : 1606252557000
+    },
+    "auth/go/src/ee/auth/auth_test_base.go" : {
+      "path" : "auth/go/src/ee/auth/auth_test_base.go",
+      "date" : 1606252557000
+    },
+    "auth/go/src/ee/auth/auth_commands_base.go" : {
+      "path" : "auth/go/src/ee/auth/auth_commands_base.go",
+      "date" : 1606252557000
+    },
+    "auth/go/src/ee/auth/auth_events_base.go" : {
+      "path" : "auth/go/src/ee/auth/auth_events_base.go",
+      "date" : 1606252557000
+    },
+    "auth/go/src/ee/auth/auth_aggregate_base.go" : {
+      "path" : "auth/go/src/ee/auth/auth_aggregate_base.go",
+      "date" : 1606252557000
+    },
+    "auth/go/src/ee/auth/auth_query_base.go" : {
+      "path" : "auth/go/src/ee/auth/auth_query_base.go",
+      "date" : 1606252557000
+    },
+    "auth/go/src/ee/auth/auth_http_base.go" : {
+      "path" : "auth/go/src/ee/auth/auth_http_base.go",
+      "date" : 1606252557000
+    },
+    "auth/go/src/ee/auth/auth_client_base.go" : {
+      "path" : "auth/go/src/ee/auth/auth_client_base.go",
+      "date" : 1606252557000
+    },
+    "auth/go/src/ee/auth/auth_cli_base.go" : {
+      "path" : "auth/go/src/ee/auth/auth_cli_base.go",
+      "date" : 1606252557000
+    },
+    "auth/go/src/ee/auth/auth_state_machine_base.go" : {
+      "path" : "auth/go/src/ee/auth/auth_state_machine_base.go",
+      "date" : 1606252557000
     }
   }
 }
