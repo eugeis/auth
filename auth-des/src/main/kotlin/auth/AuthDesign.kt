@@ -2,6 +2,7 @@ package auth
 
 import ee.design.*
 import ee.lang.*
+import ee.lang.gen.go.g
 
 object Auth : Comp({ namespace("ee.auth") }) {
     object Auth : Module() {
