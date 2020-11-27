@@ -20,14 +20,14 @@ func NewAuth(appBase *app.AppBase) *Auth {
 
 func (o *Auth) Start() (err error) {
 
-	authEngine := auth.NewAuthEventhorizonInitializer(o.EventStore, o.EventBus, o.CommandBus, o.ReadRepos)
+	authEngine := auth.NewEsInitializer(o.EventStore, o.EventBus, o.CommandBus, o.ReadRepos)
 	if err = authEngine.Setup(); err != nil {
 		return
 	}
 
 	authEngine.ActivatePasswordEncryption()
 
-	authRouter := auth.NewAuthRouter("", o.Ctx, o.CommandBus, o.ReadRepos)
+	authRouter := auth.NewRouter("", o.Ctx, o.CommandBus, o.ReadRepos)
 	if err = authRouter.Setup(o.Router); err != nil {
 		return
 	}

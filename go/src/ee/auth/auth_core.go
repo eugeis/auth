@@ -4,7 +4,7 @@ import (
 	"github.com/go-ee/utils/crypt"
 )
 
-func (o *AuthEventhorizonInitializer) ActivatePasswordEncryption() {
+func (o *EsInitializer) ActivatePasswordEncryption() {
 	o.AccountAggregateInitializer.AddCreatePreparer(
 		func(cmd *CreateAccount, entity *Account) (err error) {
 			cmd.Password, err = crypt.Hash(cmd.Password)
