@@ -35,18 +35,32 @@ func (o *AccountClient) ImportJSON(fileJSON string) (err error) {
 	return
 }
 
+func (o *AccountClient) ExportJSON(targetFileJSON string) (err error) {
+	/*
+	    var items []*Account
+		if items, err = o.FindAll(); err == nil {
+	    }
+	*/
+	return
+}
+
+func (o *AccountClient) Create(item *Account) (err error) {
+	err = net.PostById(item, item.Id, o.UrlIdBased, o.Client)
+	return
+}
+
 func (o *AccountClient) CreateItems(items []*Account) (err error) {
 	for _, item := range items {
-		if err = net.PostById(item, item.Id, o.UrlIdBased, o.Client); err != nil {
+		if err = o.Create(item); err != nil {
 			return
 		}
 	}
 	return
 }
 
-func (o *AccountClient) DeleteItems(items []*Account) (err error) {
-	for _, item := range items {
-		if err = net.DeleteById(item.Id, o.UrlIdBased, o.Client); err != nil {
+func (o *AccountClient) DeleteByIds(itemIds []uuid.UUID) (err error) {
+	for _, itemId := range itemIds {
+		if err = net.DeleteById(itemId, o.UrlIdBased, o.Client); err != nil {
 			return
 		}
 	}
