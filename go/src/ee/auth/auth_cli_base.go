@@ -1,33 +1,31 @@
 package auth
 
+import (
+	"net/http"
+)
 
 type AccountCli struct {
+	Client *AccountClient
 }
 
-func NewAccountCliDefault() (ret *AccountCli) {
-    ret = &AccountCli{}
-    return
+func NewAccountCli(client *AccountClient) (ret *AccountCli) {
+	ret = &AccountCli{
+		Client: client,
+	}
+	return
 }
 
-
-type AuthCli struct {
-    AccountCli *AccountCli
+type Cli struct {
+	Client     *Client
+	AccountCli *AccountCli
 }
 
-func NewAuthCli() (ret *AuthCli) {
-        
-    accountCli := NewAccountCliDefault()
-    ret = &AuthCli{
-        AccountCli: accountCli,
-    }
-    return
+func NewCli(url string, httpClient *http.Client) (ret *Cli) {
+	client := NewClient(url, httpClient)
+	accountCli := NewAccountCli(client.AccountClient)
+	ret = &Cli{
+		Client:     client,
+		AccountCli: accountCli,
+	}
+	return
 }
-
-
-
-
-
-
-
-
-

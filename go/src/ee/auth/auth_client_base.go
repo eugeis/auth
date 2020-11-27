@@ -3,20 +3,24 @@ package auth
 import (
 	"encoding/json"
 	"github.com/go-ee/utils/net"
+	"github.com/google/uuid"
 	"io/ioutil"
 	"net/http"
 )
 
 type AccountClient struct {
-	Url    string
-	Client *http.Client
+	UrlIdBased string
+	Url        string
+	Client     *http.Client
 }
 
 func NewAccountClient(url string, client *http.Client) (ret *AccountClient) {
+	urlIdBased := url + "/" + "account"
 	url = url + "/" + "accounts"
 	ret = &AccountClient{
-		Url:    url,
-		Client: client,
+		UrlIdBased: urlIdBased,
+		Url:        url,
+		Client:     client,
 	}
 	return
 }
@@ -27,16 +31,35 @@ func (o *AccountClient) ImportJSON(fileJSON string) (err error) {
 		return
 	}
 
-	err = o.Create(items)
+	err = o.CreateItems(items)
 	return
 }
 
-func (o *AccountClient) Create(items []*Account) (err error) {
+func (o *AccountClient) CreateItems(items []*Account) (err error) {
 	for _, item := range items {
-		if err = net.PostById(item, item.Id, o.Url, o.Client); err != nil {
+		if err = net.PostById(item, item.Id, o.UrlIdBased, o.Client); err != nil {
 			return
 		}
 	}
+	return
+}
+
+func (o *AccountClient) DeleteItems(items []*Account) (err error) {
+	for _, item := range items {
+		if err = net.DeleteById(item.Id, o.UrlIdBased, o.Client); err != nil {
+			return
+		}
+	}
+	return
+}
+
+func (o *AccountClient) DeleteById(itemId *uuid.UUID) (err error) {
+	err = net.DeleteById(itemId, o.UrlIdBased, o.Client)
+	return
+}
+
+func (o *AccountClient) FindAll() (ret []*Account, err error) {
+	err = net.GetItems(&ret, o.Url, o.Client)
 	return
 }
 
