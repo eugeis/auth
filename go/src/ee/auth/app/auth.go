@@ -27,7 +27,7 @@ func (o *Auth) Start() (err error) {
 
 	authEngine.ActivatePasswordEncryption()
 
-	authRouter := auth.NewRouter("", o.Ctx, o.CommandBus, o.ReadRepos)
+	authRouter := auth.NewRouter("", o.NewContext, o.CommandBus, o.ReadRepos)
 	if err = authRouter.Setup(o.Router); err != nil {
 		return
 	}

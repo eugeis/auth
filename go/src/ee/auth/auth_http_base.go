@@ -131,16 +131,18 @@ type AccountRouter struct {
 	CommandHandler    *AccountHttpCommandHandler
 }
 
-func NewAccountRouter(pathPrefix string, context context.Context, commandBus eventhorizon.CommandHandler,
+func NewAccountRouter(pathPrefix string, newContext func(string) (ret context.Context),
+	commandBus eventhorizon.CommandHandler,
 	readRepos func(string, func() (ret eventhorizon.Entity)) (ret eventhorizon.ReadWriteRepo)) (ret *AccountRouter) {
 	pathPrefixIdBased := pathPrefix + "/" + "account"
 	pathPrefix = pathPrefix + "/" + "accounts"
+	ctx := newContext("account")
 	entityFactory := func() eventhorizon.Entity { return NewAccountDefault() }
 	repo := readRepos(string(AccountAggregateType), entityFactory)
 	httpQueryHandler := eh.NewHttpQueryHandlerFull()
 	httpCommandHandler := eh.NewHttpCommandHandlerFull(context, commandBus)
 
-	queryRepository := NewAccountQueryRepositoryFull(repo, context)
+	queryRepository := NewAccountQueryRepositoryFull(repo, ctx)
 	queryHandler := NewAccountHttpQueryHandlerFull(httpQueryHandler, queryRepository)
 	commandHandler := NewAccountHttpCommandHandlerFull(httpCommandHandler)
 	ret = &AccountRouter{
@@ -206,10 +208,10 @@ type Router struct {
 	AccountRouter *AccountRouter
 }
 
-func NewRouter(pathPrefix string, context context.Context, commandBus *bus.CommandHandler,
+func NewRouter(pathPrefix string, newContext func(string) (ret context.Context), commandBus *bus.CommandHandler,
 	readRepos func(string, func() (ret eventhorizon.Entity)) (ret eventhorizon.ReadWriteRepo)) (ret *Router) {
 	pathPrefix = pathPrefix + "/" + "auth"
-	accountRouter := NewAccountRouter(pathPrefix, context, commandBus, readRepos)
+	accountRouter := NewAccountRouter(pathPrefix, newContext, commandBus, readRepos)
 	ret = &Router{
 		PathPrefix:    pathPrefix,
 		AccountRouter: accountRouter,
