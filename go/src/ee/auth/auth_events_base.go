@@ -52,22 +52,10 @@ func (o *AccountUpdated) AddToRoles(item string) string {
 	return item
 }
 
-type AccountDeleted struct {
-}
-
-type AccountSentEnabledConfirmation struct {
-}
-
-type AccountSentDisabledConfirmation struct {
-}
-
 type AccountLogged struct {
 	Username string `json:"username,omitempty" eh:"optional"`
 	Email    string `json:"email,omitempty" eh:"optional"`
 	Password string `json:"password,omitempty" eh:"optional"`
-}
-
-type AccountSentCreatedConfirmation struct {
 }
 
 type AccountEventType struct {

@@ -139,13 +139,13 @@ func (o *AccountCommandHandler) Execute(cmd eventhorizon.Command, entity eventho
 func (o *AccountCommandHandler) SetupCommandHandler() (err error) {
 	o.SendEnabledConfirmationHandler = func(command *SendEnabledConfirmationAccount, entity *Account, store eh.AggregateStoreEvent) (err error) {
 		if err = eh.ValidateIdsMatch(entity.Id, command.Id, AccountAggregateType); err == nil {
-			store.AppendEvent(AccountSentEnabledConfirmationEvent, &AccountSentEnabledConfirmation{}, time.Now())
+			store.AppendEvent(AccountSentEnabledConfirmationEvent, nil, time.Now())
 		}
 		return
 	}
 	o.SendDisabledConfirmationHandler = func(command *SendDisabledConfirmationAccount, entity *Account, store eh.AggregateStoreEvent) (err error) {
 		if err = eh.ValidateIdsMatch(entity.Id, command.Id, AccountAggregateType); err == nil {
-			store.AppendEvent(AccountSentDisabledConfirmationEvent, &AccountSentDisabledConfirmation{}, time.Now())
+			store.AppendEvent(AccountSentDisabledConfirmationEvent, nil, time.Now())
 		}
 		return
 	}
@@ -160,7 +160,7 @@ func (o *AccountCommandHandler) SetupCommandHandler() (err error) {
 	}
 	o.SendCreatedConfirmationHandler = func(command *SendCreatedConfirmationAccount, entity *Account, store eh.AggregateStoreEvent) (err error) {
 		if err = eh.ValidateIdsMatch(entity.Id, command.Id, AccountAggregateType); err == nil {
-			store.AppendEvent(AccountSentCreatedConfirmationEvent, &AccountSentCreatedConfirmation{}, time.Now())
+			store.AppendEvent(AccountSentCreatedConfirmationEvent, nil, time.Now())
 		}
 		return
 	}
@@ -177,19 +177,19 @@ func (o *AccountCommandHandler) SetupCommandHandler() (err error) {
 	}
 	o.DeleteHandler = func(command *DeleteAccount, entity *Account, store eh.AggregateStoreEvent) (err error) {
 		if err = eh.ValidateIdsMatch(entity.Id, command.Id, AccountAggregateType); err == nil {
-			store.AppendEvent(AccountDeletedEvent, &AccountDeleted{}, time.Now())
+			store.AppendEvent(AccountDeletedEvent, nil, time.Now())
 		}
 		return
 	}
 	o.EnableHandler = func(command *EnableAccount, entity *Account, store eh.AggregateStoreEvent) (err error) {
 		if err = eh.ValidateIdsMatch(entity.Id, command.Id, AccountAggregateType); err == nil {
-			store.AppendEvent(AccountEnabledEvent, &AccountEnabled{}, time.Now())
+			store.AppendEvent(AccountEnabledEvent, nil, time.Now())
 		}
 		return
 	}
 	o.DisableHandler = func(command *DisableAccount, entity *Account, store eh.AggregateStoreEvent) (err error) {
 		if err = eh.ValidateIdsMatch(entity.Id, command.Id, AccountAggregateType); err == nil {
-			store.AppendEvent(AccountDisabledEvent, &AccountDisabled{}, time.Now())
+			store.AppendEvent(AccountDisabledEvent, nil, time.Now())
 		}
 		return
 	}
