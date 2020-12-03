@@ -3,7 +3,6 @@ package auth
 import (
 	"fmt"
 	"github.com/go-ee/utils/enum"
-	"github.com/google/uuid"
 	"github.com/looplab/eventhorizon"
 	"gopkg.in/mgo.v2/bson"
 	"strings"
@@ -27,7 +26,6 @@ type AccountCreated struct {
 	Password string      `json:"password,omitempty" eh:"optional"`
 	Email    string      `json:"email,omitempty" eh:"optional"`
 	Roles    []string    `json:"roles,omitempty" eh:"optional"`
-	Id       uuid.UUID   `json:"id,omitempty" eh:"optional"`
 }
 
 func (o *AccountCreated) AddToRoles(item string) string {
@@ -36,11 +34,9 @@ func (o *AccountCreated) AddToRoles(item string) string {
 }
 
 type AccountEnabled struct {
-	Id uuid.UUID `json:"id,omitempty" eh:"optional"`
 }
 
 type AccountDisabled struct {
-	Id uuid.UUID `json:"id,omitempty" eh:"optional"`
 }
 
 type AccountUpdated struct {
@@ -49,7 +45,6 @@ type AccountUpdated struct {
 	Password string      `json:"password,omitempty" eh:"optional"`
 	Email    string      `json:"email,omitempty" eh:"optional"`
 	Roles    []string    `json:"roles,omitempty" eh:"optional"`
-	Id       uuid.UUID   `json:"id,omitempty" eh:"optional"`
 }
 
 func (o *AccountUpdated) AddToRoles(item string) string {
@@ -58,26 +53,21 @@ func (o *AccountUpdated) AddToRoles(item string) string {
 }
 
 type AccountDeleted struct {
-	Id uuid.UUID `json:"id,omitempty" eh:"optional"`
 }
 
 type AccountSentEnabledConfirmation struct {
-	Id uuid.UUID `json:"id,omitempty" eh:"optional"`
 }
 
 type AccountSentDisabledConfirmation struct {
-	Id uuid.UUID `json:"id,omitempty" eh:"optional"`
 }
 
 type AccountLogged struct {
-	Username string    `json:"username,omitempty" eh:"optional"`
-	Email    string    `json:"email,omitempty" eh:"optional"`
-	Password string    `json:"password,omitempty" eh:"optional"`
-	Id       uuid.UUID `json:"id,omitempty" eh:"optional"`
+	Username string `json:"username,omitempty" eh:"optional"`
+	Email    string `json:"email,omitempty" eh:"optional"`
+	Password string `json:"password,omitempty" eh:"optional"`
 }
 
 type AccountSentCreatedConfirmation struct {
-	Id uuid.UUID `json:"id,omitempty" eh:"optional"`
 }
 
 type AccountEventType struct {
