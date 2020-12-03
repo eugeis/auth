@@ -2,6 +2,7 @@ package main
 
 import (
 	"ee/auth/app"
+	"github.com/go-ee/utils/eh/app/filestore"
 	"github.com/go-ee/utils/eh/app/memory"
 	"github.com/go-ee/utils/eh/app/mongo"
 	"github.com/go-ee/utils/lg"
@@ -14,7 +15,7 @@ import (
 func main() {
 	const productName = "Auth"
 
-	var name, serverAddress, mongoUrl, targetFile string
+	var name, serverAddress, mongoUrl, targetFile, folderEventStore string
 	var debug, secure bool
 	var serverPort int
 
@@ -84,7 +85,24 @@ func main() {
 			Usage: "Start server with memory backend",
 			Flags: commonFlags,
 			Action: func(c *cli.Context) (err error) {
-				Auth := app.NewAuth(memory.NewAppMemory(productName, name, secure, serverAddress, serverPort))
+				Auth := app.NewAuth(
+					memory.NewAppMemory(productName, name, secure, serverAddress, serverPort))
+				err = Auth.Start()
+				return
+			},
+		}, {
+			Name:  "fileStore",
+			Usage: "Start server with file based event store",
+			Flags: append(commonFlags, &cli.StringFlag{
+				Name:        "fileStore",
+				Aliases:     []string{"f"},
+				Usage:       "folder for events",
+				Value:       "eventStore",
+				Destination: &folderEventStore,
+			}),
+			Action: func(c *cli.Context) (err error) {
+				Auth := app.NewAuth(
+					filestore.NewAppFileStore(productName, name, secure, serverAddress, serverPort, folderEventStore))
 				err = Auth.Start()
 				return
 			},

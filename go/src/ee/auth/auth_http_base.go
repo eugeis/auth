@@ -140,7 +140,7 @@ func NewAccountRouter(pathPrefix string, newContext func(string) (ret context.Co
 	entityFactory := func() eventhorizon.Entity { return NewAccountDefault() }
 	repo := readRepos(string(AccountAggregateType), entityFactory)
 	httpQueryHandler := eh.NewHttpQueryHandlerFull()
-	httpCommandHandler := eh.NewHttpCommandHandlerFull(context, commandBus)
+	httpCommandHandler := eh.NewHttpCommandHandlerFull(ctx, commandBus)
 
 	queryRepository := NewAccountQueryRepositoryFull(repo, ctx)
 	queryHandler := NewAccountHttpQueryHandlerFull(httpQueryHandler, queryRepository)
