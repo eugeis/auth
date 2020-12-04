@@ -9,6 +9,7 @@ import (
 )
 
 type AccountCommandHandler struct {
+	CommandsPreparer                func(eventhorizon.Command, *Account) (err error)
 	SendEnabledConfirmationHandler  func(*SendEnabledConfirmationAccount, *Account, eh.AggregateStoreEvent) (err error)
 	SendDisabledConfirmationHandler func(*SendDisabledConfirmationAccount, *Account, eh.AggregateStoreEvent) (err error)
 	LoginHandler                    func(*LoginAccount, *Account, eh.AggregateStoreEvent) (err error)
@@ -18,6 +19,9 @@ type AccountCommandHandler struct {
 	EnableHandler                   func(*EnableAccount, *Account, eh.AggregateStoreEvent) (err error)
 	DisableHandler                  func(*DisableAccount, *Account, eh.AggregateStoreEvent) (err error)
 	UpdateHandler                   func(*UpdateAccount, *Account, eh.AggregateStoreEvent) (err error)
+}
+
+func (o *AccountCommandHandler) AddCommandsPreparer(preparer func(eventhorizon.Command, eventhorizon.Entity, eh.AggregateStoreEvent) (err error)) {
 }
 
 func (o *AccountCommandHandler) AddSendEnabledConfirmationPreparer(preparer func(*SendEnabledConfirmationAccount, *Account) (err error)) {
@@ -111,25 +115,30 @@ func (o *AccountCommandHandler) AddUpdatePreparer(preparer func(*UpdateAccount, 
 }
 
 func (o *AccountCommandHandler) Execute(cmd eventhorizon.Command, entity eventhorizon.Entity, store eh.AggregateStoreEvent) (err error) {
+	account := entity.(*Account)
+	if err = o.CommandsPreparer(cmd, account); err != nil {
+		return
+	}
+
 	switch cmd.CommandType() {
 	case SendEnabledConfirmationAccountCommand:
-		err = o.SendEnabledConfirmationHandler(cmd.(*SendEnabledConfirmationAccount), entity.(*Account), store)
+		err = o.SendEnabledConfirmationHandler(cmd.(*SendEnabledConfirmationAccount), account, store)
 	case SendDisabledConfirmationAccountCommand:
-		err = o.SendDisabledConfirmationHandler(cmd.(*SendDisabledConfirmationAccount), entity.(*Account), store)
+		err = o.SendDisabledConfirmationHandler(cmd.(*SendDisabledConfirmationAccount), account, store)
 	case LoginAccountCommand:
-		err = o.LoginHandler(cmd.(*LoginAccount), entity.(*Account), store)
+		err = o.LoginHandler(cmd.(*LoginAccount), account, store)
 	case SendCreatedConfirmationAccountCommand:
-		err = o.SendCreatedConfirmationHandler(cmd.(*SendCreatedConfirmationAccount), entity.(*Account), store)
+		err = o.SendCreatedConfirmationHandler(cmd.(*SendCreatedConfirmationAccount), account, store)
 	case CreateAccountCommand:
-		err = o.CreateHandler(cmd.(*CreateAccount), entity.(*Account), store)
+		err = o.CreateHandler(cmd.(*CreateAccount), account, store)
 	case DeleteAccountCommand:
-		err = o.DeleteHandler(cmd.(*DeleteAccount), entity.(*Account), store)
+		err = o.DeleteHandler(cmd.(*DeleteAccount), account, store)
 	case EnableAccountCommand:
-		err = o.EnableHandler(cmd.(*EnableAccount), entity.(*Account), store)
+		err = o.EnableHandler(cmd.(*EnableAccount), account, store)
 	case DisableAccountCommand:
-		err = o.DisableHandler(cmd.(*DisableAccount), entity.(*Account), store)
+		err = o.DisableHandler(cmd.(*DisableAccount), account, store)
 	case UpdateAccountCommand:
-		err = o.UpdateHandler(cmd.(*UpdateAccount), entity.(*Account), store)
+		err = o.UpdateHandler(cmd.(*UpdateAccount), account, store)
 	default:
 		err = errors.New(fmt.Sprintf("Not supported command type '%v' for entity '%v", cmd.CommandType(), entity))
 	}
@@ -137,6 +146,13 @@ func (o *AccountCommandHandler) Execute(cmd eventhorizon.Command, entity eventho
 }
 
 func (o *AccountCommandHandler) SetupCommandHandler() (err error) {
+	o.CommandsPreparer = func(cmd eventhorizon.Command, entity *Account) (err error) {
+		if entity.DeletedAt != nil {
+			err = eh.CommandError{Err: eh.ErrAggregateDeleted, Cmd: cmd, Entity: entity}
+		}
+		return
+	}
+
 	o.SendEnabledConfirmationHandler = func(command *SendEnabledConfirmationAccount, entity *Account, store eh.AggregateStoreEvent) (err error) {
 		store.AppendEvent(AccountSentEnabledConfirmationEvent, nil, time.Now())
 		return
