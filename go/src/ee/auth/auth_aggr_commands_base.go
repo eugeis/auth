@@ -13,7 +13,6 @@ type AccountCommandHandler struct {
 	SendEnabledConfirmationHandler  func(*SendEnabledConfirmationAccount, *Account, eh.AggregateStoreEvent) (err error)
 	SendDisabledConfirmationHandler func(*SendDisabledConfirmationAccount, *Account, eh.AggregateStoreEvent) (err error)
 	LoginHandler                    func(*LoginAccount, *Account, eh.AggregateStoreEvent) (err error)
-	SendCreatedConfirmationHandler  func(*SendCreatedConfirmationAccount, *Account, eh.AggregateStoreEvent) (err error)
 	CreateHandler                   func(*CreateAccount, *Account, eh.AggregateStoreEvent) (err error)
 	DeleteHandler                   func(*DeleteAccount, *Account, eh.AggregateStoreEvent) (err error)
 	EnableHandler                   func(*EnableAccount, *Account, eh.AggregateStoreEvent) (err error)
@@ -21,7 +20,7 @@ type AccountCommandHandler struct {
 	UpdateHandler                   func(*UpdateAccount, *Account, eh.AggregateStoreEvent) (err error)
 }
 
-func (o *AccountCommandHandler) AddCommandsPreparer(preparer func(eventhorizon.Command, eventhorizon.Entity, eh.AggregateStoreEvent) (err error)) {
+func (o *AccountCommandHandler) AddCommandsPreparer(preparer func(eventhorizon.Command, *Account) (err error)) {
 }
 
 func (o *AccountCommandHandler) AddSendEnabledConfirmationPreparer(preparer func(*SendEnabledConfirmationAccount, *Account) (err error)) {
@@ -47,16 +46,6 @@ func (o *AccountCommandHandler) AddSendDisabledConfirmationPreparer(preparer fun
 func (o *AccountCommandHandler) AddLoginPreparer(preparer func(*LoginAccount, *Account) (err error)) {
 	prevHandler := o.LoginHandler
 	o.LoginHandler = func(command *LoginAccount, entity *Account, store eh.AggregateStoreEvent) (err error) {
-		if err = preparer(command, entity); err == nil {
-			err = prevHandler(command, entity, store)
-		}
-		return
-	}
-}
-
-func (o *AccountCommandHandler) AddSendCreatedConfirmationPreparer(preparer func(*SendCreatedConfirmationAccount, *Account) (err error)) {
-	prevHandler := o.SendCreatedConfirmationHandler
-	o.SendCreatedConfirmationHandler = func(command *SendCreatedConfirmationAccount, entity *Account, store eh.AggregateStoreEvent) (err error) {
 		if err = preparer(command, entity); err == nil {
 			err = prevHandler(command, entity, store)
 		}
@@ -127,8 +116,6 @@ func (o *AccountCommandHandler) Execute(cmd eventhorizon.Command, entity eventho
 		err = o.SendDisabledConfirmationHandler(cmd.(*SendDisabledConfirmationAccount), account, store)
 	case LoginAccountCommand:
 		err = o.LoginHandler(cmd.(*LoginAccount), account, store)
-	case SendCreatedConfirmationAccountCommand:
-		err = o.SendCreatedConfirmationHandler(cmd.(*SendCreatedConfirmationAccount), account, store)
 	case CreateAccountCommand:
 		err = o.CreateHandler(cmd.(*CreateAccount), account, store)
 	case DeleteAccountCommand:
@@ -166,10 +153,6 @@ func (o *AccountCommandHandler) SetupCommandHandler() (err error) {
 			Username: command.Username,
 			Email:    command.Email,
 			Password: command.Password}, time.Now())
-		return
-	}
-	o.SendCreatedConfirmationHandler = func(command *SendCreatedConfirmationAccount, entity *Account, store eh.AggregateStoreEvent) (err error) {
-		store.AppendEvent(AccountSentCreatedConfirmationEvent, nil, time.Now())
 		return
 	}
 	o.CreateHandler = func(command *CreateAccount, entity *Account, store eh.AggregateStoreEvent) (err error) {

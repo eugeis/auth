@@ -16,20 +16,16 @@ type AccountAggrInitializer struct {
 	ProjectorHandler *AccountEventHandler
 }
 
-func (o *AccountAggrInitializer) RegisterForSentEnabledConfirmation(handler eventhorizon.EventHandler) error {
-	return o.RegisterForEvent(handler, AccountEventTypes().AccountSentEnabledConfirmation())
-}
-
 func (o *AccountAggrInitializer) RegisterForSentDisabledConfirmation(handler eventhorizon.EventHandler) error {
 	return o.RegisterForEvent(handler, AccountEventTypes().AccountSentDisabledConfirmation())
 }
 
-func (o *AccountAggrInitializer) RegisterForLogged(handler eventhorizon.EventHandler) error {
-	return o.RegisterForEvent(handler, AccountEventTypes().AccountLogged())
+func (o *AccountAggrInitializer) RegisterForSentEnabledConfirmation(handler eventhorizon.EventHandler) error {
+	return o.RegisterForEvent(handler, AccountEventTypes().AccountSentEnabledConfirmation())
 }
 
-func (o *AccountAggrInitializer) RegisterForSentCreatedConfirmation(handler eventhorizon.EventHandler) error {
-	return o.RegisterForEvent(handler, AccountEventTypes().AccountSentCreatedConfirmation())
+func (o *AccountAggrInitializer) RegisterForLogged(handler eventhorizon.EventHandler) error {
+	return o.RegisterForEvent(handler, AccountEventTypes().AccountLogged())
 }
 
 func NewAccountAggrInitializer(eventStore eventhorizon.EventStore, eventBus eventhorizon.EventBus, commandBus *bus.CommandHandler,

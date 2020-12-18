@@ -9,29 +9,15 @@ import (
 )
 
 const (
-	AccountCreatedEvent                  eventhorizon.EventType = "AccountCreated"
+	AccountSentDisabledConfirmationEvent eventhorizon.EventType = "AccountSentDisabledConfirmation"
+	AccountSentEnabledConfirmationEvent  eventhorizon.EventType = "AccountSentEnabledConfirmation"
 	AccountEnabledEvent                  eventhorizon.EventType = "AccountEnabled"
 	AccountDisabledEvent                 eventhorizon.EventType = "AccountDisabled"
 	AccountUpdatedEvent                  eventhorizon.EventType = "AccountUpdated"
 	AccountDeletedEvent                  eventhorizon.EventType = "AccountDeleted"
-	AccountSentEnabledConfirmationEvent  eventhorizon.EventType = "AccountSentEnabledConfirmation"
-	AccountSentDisabledConfirmationEvent eventhorizon.EventType = "AccountSentDisabledConfirmation"
+	AccountCreatedEvent                  eventhorizon.EventType = "AccountCreated"
 	AccountLoggedEvent                   eventhorizon.EventType = "AccountLogged"
-	AccountSentCreatedConfirmationEvent  eventhorizon.EventType = "AccountSentCreatedConfirmation"
 )
-
-type AccountCreated struct {
-	Name     *PersonName `json:"name,omitempty" eh:"optional"`
-	Username string      `json:"username,omitempty" eh:"optional"`
-	Password string      `json:"password,omitempty" eh:"optional"`
-	Email    string      `json:"email,omitempty" eh:"optional"`
-	Roles    []string    `json:"roles,omitempty" eh:"optional"`
-}
-
-func (o *AccountCreated) AddToRoles(item string) string {
-	o.Roles = append(o.Roles, item)
-	return item
-}
 
 type AccountEnabled struct {
 }
@@ -48,6 +34,19 @@ type AccountUpdated struct {
 }
 
 func (o *AccountUpdated) AddToRoles(item string) string {
+	o.Roles = append(o.Roles, item)
+	return item
+}
+
+type AccountCreated struct {
+	Name     *PersonName `json:"name,omitempty" eh:"optional"`
+	Username string      `json:"username,omitempty" eh:"optional"`
+	Password string      `json:"password,omitempty" eh:"optional"`
+	Email    string      `json:"email,omitempty" eh:"optional"`
+	Roles    []string    `json:"roles,omitempty" eh:"optional"`
+}
+
+func (o *AccountCreated) AddToRoles(item string) string {
 	o.Roles = append(o.Roles, item)
 	return item
 }
@@ -89,10 +88,6 @@ func (o *AccountEventType) IsAccountEnabled() bool {
 
 func (o *AccountEventType) IsAccountLogged() bool {
 	return o.name == _accountEventTypes.AccountLogged().name
-}
-
-func (o *AccountEventType) IsAccountSentCreatedConfirmation() bool {
-	return o.name == _accountEventTypes.AccountSentCreatedConfirmation().name
 }
 
 func (o *AccountEventType) IsAccountSentDisabledConfirmation() bool {
@@ -151,10 +146,9 @@ var _accountEventTypes = &accountEventTypes{values: []*AccountEventType{
 	{name: "AccountDisabled", ordinal: 2},
 	{name: "AccountEnabled", ordinal: 3},
 	{name: "AccountLogged", ordinal: 4},
-	{name: "AccountSentCreatedConfirmation", ordinal: 5},
-	{name: "AccountSentDisabledConfirmation", ordinal: 6},
-	{name: "AccountSentEnabledConfirmation", ordinal: 7},
-	{name: "AccountUpdated", ordinal: 8}},
+	{name: "AccountSentDisabledConfirmation", ordinal: 5},
+	{name: "AccountSentEnabledConfirmation", ordinal: 6},
+	{name: "AccountUpdated", ordinal: 7}},
 }
 
 func AccountEventTypes() *accountEventTypes {
@@ -185,20 +179,16 @@ func (o *accountEventTypes) AccountLogged() *AccountEventType {
 	return o.values[4]
 }
 
-func (o *accountEventTypes) AccountSentCreatedConfirmation() *AccountEventType {
+func (o *accountEventTypes) AccountSentDisabledConfirmation() *AccountEventType {
 	return o.values[5]
 }
 
-func (o *accountEventTypes) AccountSentDisabledConfirmation() *AccountEventType {
+func (o *accountEventTypes) AccountSentEnabledConfirmation() *AccountEventType {
 	return o.values[6]
 }
 
-func (o *accountEventTypes) AccountSentEnabledConfirmation() *AccountEventType {
-	return o.values[7]
-}
-
 func (o *accountEventTypes) AccountUpdated() *AccountEventType {
-	return o.values[8]
+	return o.values[7]
 }
 
 func (o *accountEventTypes) ParseAccountEventType(name string) (ret *AccountEventType, ok bool) {

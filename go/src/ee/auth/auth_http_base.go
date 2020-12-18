@@ -118,12 +118,6 @@ func (o *AccountHttpCommandHandler) Login(w http.ResponseWriter, r *http.Request
 	o.HandleCommand(&LoginAccount{Id: id}, w, r)
 }
 
-func (o *AccountHttpCommandHandler) SendCreatedConfirmation(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, _ := uuid.Parse(vars["id"])
-	o.HandleCommand(&SendCreatedConfirmationAccount{Id: id}, w, r)
-}
-
 type AccountRouter struct {
 	PathPrefix        string
 	PathPrefixIdBased string
@@ -170,9 +164,6 @@ func (o *AccountRouter) Setup(router *mux.Router) (err error) {
 	router.Methods(http.MethodPost).PathPrefix(o.PathPrefixIdBased).Path("/{id}/login").
 		Name("LoginAccount").
 		HandlerFunc(o.CommandHandler.Login)
-	router.Methods(http.MethodPost).PathPrefix(o.PathPrefixIdBased).Path("/{id}/send-created-confirmation").
-		Name("SendCreatedConfirmationAccount").
-		HandlerFunc(o.CommandHandler.SendCreatedConfirmation)
 	router.Methods(http.MethodPost).PathPrefix(o.PathPrefixIdBased).Path("/{id}/send-enabled-confirmation").
 		Name("SendEnabledConfirmationAccount").
 		HandlerFunc(o.CommandHandler.SendEnabledConfirmation)

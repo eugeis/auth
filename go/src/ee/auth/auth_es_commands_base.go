@@ -13,7 +13,6 @@ const (
 	SendEnabledConfirmationAccountCommand  eventhorizon.CommandType = "SendEnabledConfirmationAccount"
 	SendDisabledConfirmationAccountCommand eventhorizon.CommandType = "SendDisabledConfirmationAccount"
 	LoginAccountCommand                    eventhorizon.CommandType = "LoginAccount"
-	SendCreatedConfirmationAccountCommand  eventhorizon.CommandType = "SendCreatedConfirmationAccount"
 	CreateAccountCommand                   eventhorizon.CommandType = "CreateAccount"
 	DeleteAccountCommand                   eventhorizon.CommandType = "DeleteAccount"
 	EnableAccountCommand                   eventhorizon.CommandType = "EnableAccount"
@@ -55,18 +54,6 @@ type LoginAccount struct {
 func (o *LoginAccount) AggregateID() uuid.UUID                    { return o.Id }
 func (o *LoginAccount) AggregateType() eventhorizon.AggregateType { return AccountAggregateType }
 func (o *LoginAccount) CommandType() eventhorizon.CommandType     { return LoginAccountCommand }
-
-type SendCreatedConfirmationAccount struct {
-	Id uuid.UUID `json:"id,omitempty" eh:"optional"`
-}
-
-func (o *SendCreatedConfirmationAccount) AggregateID() uuid.UUID { return o.Id }
-func (o *SendCreatedConfirmationAccount) AggregateType() eventhorizon.AggregateType {
-	return AccountAggregateType
-}
-func (o *SendCreatedConfirmationAccount) CommandType() eventhorizon.CommandType {
-	return SendCreatedConfirmationAccountCommand
-}
 
 type CreateAccount struct {
 	Name     *PersonName `json:"name,omitempty" eh:"optional"`
@@ -151,10 +138,6 @@ func (o *AccountCommandType) IsLoginAccount() bool {
 	return o.name == _accountCommandTypes.LoginAccount().name
 }
 
-func (o *AccountCommandType) IsSendCreatedConfirmationAccount() bool {
-	return o.name == _accountCommandTypes.SendCreatedConfirmationAccount().name
-}
-
 func (o *AccountCommandType) IsCreateAccount() bool {
 	return o.name == _accountCommandTypes.CreateAccount().name
 }
@@ -217,12 +200,11 @@ var _accountCommandTypes = &accountCommandTypes{values: []*AccountCommandType{
 	{name: "SendEnabledConfirmationAccount", ordinal: 0},
 	{name: "SendDisabledConfirmationAccount", ordinal: 1},
 	{name: "LoginAccount", ordinal: 2},
-	{name: "SendCreatedConfirmationAccount", ordinal: 3},
-	{name: "CreateAccount", ordinal: 4},
-	{name: "DeleteAccount", ordinal: 5},
-	{name: "EnableAccount", ordinal: 6},
-	{name: "DisableAccount", ordinal: 7},
-	{name: "UpdateAccount", ordinal: 8}},
+	{name: "CreateAccount", ordinal: 3},
+	{name: "DeleteAccount", ordinal: 4},
+	{name: "EnableAccount", ordinal: 5},
+	{name: "DisableAccount", ordinal: 6},
+	{name: "UpdateAccount", ordinal: 7}},
 }
 
 func AccountCommandTypes() *accountCommandTypes {
@@ -245,28 +227,24 @@ func (o *accountCommandTypes) LoginAccount() *AccountCommandType {
 	return o.values[2]
 }
 
-func (o *accountCommandTypes) SendCreatedConfirmationAccount() *AccountCommandType {
+func (o *accountCommandTypes) CreateAccount() *AccountCommandType {
 	return o.values[3]
 }
 
-func (o *accountCommandTypes) CreateAccount() *AccountCommandType {
+func (o *accountCommandTypes) DeleteAccount() *AccountCommandType {
 	return o.values[4]
 }
 
-func (o *accountCommandTypes) DeleteAccount() *AccountCommandType {
+func (o *accountCommandTypes) EnableAccount() *AccountCommandType {
 	return o.values[5]
 }
 
-func (o *accountCommandTypes) EnableAccount() *AccountCommandType {
+func (o *accountCommandTypes) DisableAccount() *AccountCommandType {
 	return o.values[6]
 }
 
-func (o *accountCommandTypes) DisableAccount() *AccountCommandType {
-	return o.values[7]
-}
-
 func (o *accountCommandTypes) UpdateAccount() *AccountCommandType {
-	return o.values[8]
+	return o.values[7]
 }
 
 func (o *accountCommandTypes) ParseAccountCommandType(name string) (ret *AccountCommandType, ok bool) {

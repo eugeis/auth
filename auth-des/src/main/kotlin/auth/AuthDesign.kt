@@ -2,7 +2,6 @@ package auth
 
 import ee.design.*
 import ee.lang.*
-import ee.lang.gen.go.g
 
 object Auth : Comp({ namespace("ee.auth") }) {
     object Auth : Module() {
@@ -29,7 +28,6 @@ object Auth : Comp({ namespace("ee.auth") }) {
             val enable = updateBy(p(disabled) { value(false) })
             val disable = updateBy(p(disabled) { value(true) })
 
-            val sendCreatedConfirmation = command()
             val sendEnabledConfirmation = command()
             val sendDisabledConfirmation = command()
 
@@ -65,17 +63,21 @@ object Auth : Comp({ namespace("ee.auth") }) {
             }
 
             object AccountConfirmation : ProcessManager() {
+                val sentDisabledConfirmation = propB()
+                val sentEnabledConfirmation = propB()
+
                 object Initial : State({
-                    executeAndProduce(create())
                     handle(eventOf(create())).ifTrue(disabled.yes()).to(Disabled)
                     handle(eventOf(create())).ifFalse(disabled.yes()).to(Enabled)
                 })
 
                 object Disabled : State({
+                    executeAndProduce(sendDisabledConfirmation)
                     handle(eventOf(enable)).to(Enabled).produce(sendEnabledConfirmation)
                 })
 
                 object Enabled : State({
+                    executeAndProduce(sendEnabledConfirmation)
                     handle(eventOf(disable)).to(Disabled).produce(sendDisabledConfirmation)
                 })
             }
