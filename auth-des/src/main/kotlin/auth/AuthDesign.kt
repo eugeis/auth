@@ -22,6 +22,8 @@ object Auth : Comp({ namespace("ee.auth") }) {
             val email = propS().unique()
             val roles = propListT(n.String)
 
+            val sentDisabledConfirmation = propB().meta()
+            val sentEnabledConfirmation = propB().meta()
             val disabled = propB().meta()
 
             val login = command(username, email, password)
@@ -31,12 +33,14 @@ object Auth : Comp({ namespace("ee.auth") }) {
             val sendEnabledConfirmation = command()
             val sendDisabledConfirmation = command()
 
-            object Handler : AggregateHandler() {
-                object Initial : State({
+            object Handler : AggregateHandler({
+                defaultState(state {
+                    name("Initial")
                     executeAndProduce(create())
                     handle(eventOf(create())).ifTrue(disabled.yes()).to(Disabled)
                     handle(eventOf(create())).ifFalse(disabled.yes()).to(Enabled)
                 })
+            }) {
 
                 object Exist : State({
                     virtual()
@@ -50,36 +54,20 @@ object Auth : Comp({ namespace("ee.auth") }) {
                 object Disabled : State({
                     superUnit(Exist)
                     executeAndProduce(enable)
-                    handle(eventOf(enable)).to(Enabled)
-                })
-
-                object Enabled : State({
-                    superUnit(Exist)
-                    executeAndProduce(disable)
-                    handle(eventOf(disable)).to(Disabled)
-                })
-
-                object Deleted : State()
-            }
-
-            object AccountConfirmation : ProcessManager() {
-                val sentDisabledConfirmation = propB()
-                val sentEnabledConfirmation = propB()
-
-                object Initial : State({
-                    handle(eventOf(create())).ifTrue(disabled.yes()).to(Disabled)
-                    handle(eventOf(create())).ifFalse(disabled.yes()).to(Enabled)
-                })
-
-                object Disabled : State({
                     executeAndProduce(sendDisabledConfirmation)
                     handle(eventOf(enable)).to(Enabled).produce(sendEnabledConfirmation)
                 })
 
                 object Enabled : State({
+                    superUnit(Exist)
+                    executeAndProduce(disable)
                     executeAndProduce(sendEnabledConfirmation)
                     handle(eventOf(disable)).to(Disabled).produce(sendDisabledConfirmation)
+                    executeAndProduce(delete())
+                    handle(eventOf(delete())).to(Deleted)
                 })
+
+                object Deleted : State()
             }
         }
     }

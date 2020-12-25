@@ -125,14 +125,11 @@ type AccountRouter struct {
 	CommandHandler    *AccountHttpCommandHandler
 }
 
-func NewAccountRouter(pathPrefix string, newContext func(string) (ret context.Context),
-	commandBus eventhorizon.CommandHandler,
-	readRepos func(string, func() (ret eventhorizon.Entity)) (ret eventhorizon.ReadWriteRepo)) (ret *AccountRouter) {
+func NewAccountRouter(pathPrefix string, newContext func(string) (ret context.Context), commandBus *bus.CommandHandler,
+	repo eventhorizon.ReadRepo) (ret *AccountRouter) {
 	pathPrefixIdBased := pathPrefix + "/" + "account"
 	pathPrefix = pathPrefix + "/" + "accounts"
 	ctx := newContext("account")
-	entityFactory := func() eventhorizon.Entity { return NewAccountDefault() }
-	repo := readRepos(string(AccountAggregateType), entityFactory)
 	httpQueryHandler := eh.NewHttpQueryHandlerFull()
 	httpCommandHandler := eh.NewHttpCommandHandlerFull(ctx, commandBus)
 
@@ -199,10 +196,17 @@ type Router struct {
 	AccountRouter *AccountRouter
 }
 
-func NewRouter(pathPrefix string, newContext func(string) (ret context.Context), commandBus *bus.CommandHandler,
-	readRepos func(string, func() (ret eventhorizon.Entity)) (ret eventhorizon.ReadWriteRepo)) (ret *Router) {
+func NewRouter(pathPrefix string, newContext func(string) (ret context.Context), esEngine *EsEngine) (ret *Router, err error) {
 	pathPrefix = pathPrefix + "/" + "auth"
-	accountRouter := NewAccountRouter(pathPrefix, newContext, commandBus, readRepos)
+
+	var projectorAccount *AccountProjector
+	if projectorAccount, err = esEngine.Account.RegisterAccountProjector(string(AccountAggregateType),
+		esEngine.Account.AggregateHandlers, esEngine.Account.Events); err != nil {
+		return
+	}
+
+	accountRouter := NewAccountRouter(pathPrefix, newContext, esEngine.CommandBus, projectorAccount.Repo)
+
 	ret = &Router{
 		PathPrefix:    pathPrefix,
 		AccountRouter: accountRouter,

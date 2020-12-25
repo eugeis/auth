@@ -1,7 +1,8 @@
 package main
 
 import (
-	"ee/auth/app"
+	appAuth "ee/auth/app"
+	"github.com/go-ee/utils/eh/app"
 	"github.com/go-ee/utils/eh/app/filestore"
 	"github.com/go-ee/utils/eh/app/memory"
 	"github.com/go-ee/utils/eh/app/mongo"
@@ -76,7 +77,14 @@ func main() {
 				Destination: &mongoUrl,
 			}),
 			Action: func(c *cli.Context) (err error) {
-				Auth := app.NewAuth(mongo.NewAppMongo(productName, name, secure, serverAddress, serverPort, mongoUrl))
+				Auth := appAuth.NewAuth(mongo.NewAppMongo(
+					&app.AppInfo{
+						AppName:     name,
+						ProductName: productName,
+					}, &app.ServerConfig{
+						ServerAddress: serverAddress,
+						ServerPort:    serverPort,
+					}, secure, mongoUrl))
 				err = Auth.Start()
 				return
 			},
@@ -85,8 +93,13 @@ func main() {
 			Usage: "Start server with memory backend",
 			Flags: commonFlags,
 			Action: func(c *cli.Context) (err error) {
-				Auth := app.NewAuth(
-					memory.NewAppMemory(productName, name, secure, serverAddress, serverPort))
+				Auth := appAuth.NewAuth(memory.NewAppMemory(&app.AppInfo{
+					AppName:     name,
+					ProductName: productName,
+				}, &app.ServerConfig{
+					ServerAddress: serverAddress,
+					ServerPort:    serverPort,
+				}, secure))
 				err = Auth.Start()
 				return
 			},
@@ -101,8 +114,14 @@ func main() {
 				Destination: &folderEventStore,
 			}),
 			Action: func(c *cli.Context) (err error) {
-				Auth := app.NewAuth(
-					filestore.NewAppFileStore(productName, name, secure, serverAddress, serverPort, folderEventStore))
+				Auth := appAuth.NewAuth(
+					filestore.NewAppFileStore(&app.AppInfo{
+						AppName:     name,
+						ProductName: productName,
+					}, &app.ServerConfig{
+						ServerAddress: serverAddress,
+						ServerPort:    serverPort,
+					}, secure, folderEventStore))
 				err = Auth.Start()
 				return
 			},
