@@ -52,28 +52,28 @@ func (o *AccountAggregateHandlers) AddEventsPreparer(preparer func(eventhorizon.
 func (o *AccountAggregateHandlers) Apply(event eventhorizon.Event, account *Account) (err error) {
 
 	currentAggregateState := account.AggregateState
-	if currentAggregateState == nil {
-		currentAggregateState = AccountAggregateStateTypes().Initial()
+	if currentAggregateState == "" {
+		currentAggregateState = AccountAggregateStateTypes().Initial().Name()
 	}
 
 	var newAggregateState *AccountAggregateStateType
 	switch currentAggregateState {
-	case AccountAggregateStateTypes().Initial():
+	case AccountAggregateStateTypes().Initial().Name():
 		newAggregateState, err = o.Initial.Apply(event, account)
-	case AccountAggregateStateTypes().Deleted():
+	case AccountAggregateStateTypes().Deleted().Name():
 		newAggregateState, err = o.Deleted.Apply(event, account)
-	case AccountAggregateStateTypes().Disabled():
+	case AccountAggregateStateTypes().Disabled().Name():
 		newAggregateState, err = o.Disabled.Apply(event, account)
-	case AccountAggregateStateTypes().Enabled():
+	case AccountAggregateStateTypes().Enabled().Name():
 		newAggregateState, err = o.Enabled.Apply(event, account)
-	case AccountAggregateStateTypes().Exist():
+	case AccountAggregateStateTypes().Exist().Name():
 		newAggregateState, err = o.Exist.Apply(event, account)
 	default:
 		err = errors.New(fmt.Sprintf("Not supported AggregateState '%v' for entity '%v", account.AggregateState, account))
 	}
 
-	if err == nil && newAggregateState != account.AggregateState {
-		account.AggregateState = newAggregateState
+	if err == nil && newAggregateState.Name() != account.AggregateState {
+		account.AggregateState = newAggregateState.Name()
 	}
 	return
 }
@@ -136,21 +136,22 @@ func (o *AccountAggregateExecutors) AddCommandsPreparer(preparer func(eventhoriz
 
 func (o *AccountAggregateExecutors) Execute(cmd eventhorizon.Command, account *Account, store eh.AggregateStoreEvent) (err error) {
 
+	stateTypes := AccountAggregateStateTypes()
 	currentAggregateState := account.AggregateState
-	if currentAggregateState == nil {
-		currentAggregateState = AccountAggregateStateTypes().Initial()
+	if currentAggregateState == "" {
+		currentAggregateState = stateTypes.Initial().Name()
 	}
 
 	switch currentAggregateState {
-	case AccountAggregateStateTypes().Initial():
+	case stateTypes.Initial().Name():
 		err = o.Initial.Execute(cmd, account, store)
-	case AccountAggregateStateTypes().Deleted():
+	case stateTypes.Deleted().Name():
 		err = o.Deleted.Execute(cmd, account, store)
-	case AccountAggregateStateTypes().Disabled():
+	case stateTypes.Disabled().Name():
 		err = o.Disabled.Execute(cmd, account, store)
-	case AccountAggregateStateTypes().Enabled():
+	case stateTypes.Enabled().Name():
 		err = o.Enabled.Execute(cmd, account, store)
-	case AccountAggregateStateTypes().Exist():
+	case stateTypes.Exist().Name():
 		err = o.Exist.Execute(cmd, account, store)
 	default:
 		err = errors.New(fmt.Sprintf("Not supported state '%v' for entity '%v", account.AggregateState, account))

@@ -49,9 +49,15 @@ func (o *AccountAggregateEngine) RegisterForUpdated(handler eventhorizon.EventHa
 	return o.RegisterForEvent(handler, AccountEventTypes().AccountUpdated())
 }
 
-func (o *AccountAggregateEngine) RegisterAccountProjector(projectorType string, listener AccountAggregateHandler, events []eventhorizon.EventType) (ret *AccountProjector, err error) {
-	repo := o.Repos(projectorType, o.EntityFactory)
-	ret = NewAccountProjector(projectorType, listener, repo)
+func (o *AccountAggregateEngine) RegisterAccountProjector(
+	projType string, listener AccountAggregateHandler, events []eventhorizon.EventType) (ret *AccountProjector, err error) {
+
+	var repo eventhorizon.ReadWriteRepo
+	if repo, err = o.Repos(projType, o.EntityFactory); err != nil {
+		return
+	}
+
+	ret = NewAccountProjector(projType, listener, repo)
 	proj := projector.NewEventHandler(ret, repo)
 	proj.SetEntityFactory(o.EntityFactory)
 	err = o.RegisterForEvents(proj, events)
@@ -60,28 +66,31 @@ func (o *AccountAggregateEngine) RegisterAccountProjector(projectorType string, 
 
 type AccountProjector struct {
 	AccountAggregateHandler
-	projectorType projector.Type
-	Repo          eventhorizon.ReadRepo
+	projType projector.Type
+	Repo     eventhorizon.ReadRepo
 }
 
-func NewAccountProjector(projectorType string, eventHandler AccountAggregateHandler, repo eventhorizon.ReadRepo) (ret *AccountProjector) {
+func NewAccountProjector(projType string, eventHandler AccountAggregateHandler, repo eventhorizon.ReadRepo) (ret *AccountProjector) {
 	ret = &AccountProjector{
 		AccountAggregateHandler: eventHandler,
-		projectorType:           projector.Type(projectorType),
+		projType:                projector.Type(projType),
 		Repo:                    repo,
 	}
 	return
 }
 
 func (o *AccountProjector) ProjectorType() projector.Type {
-	return o.projectorType
+	return o.projType
 }
 
 func (o *AccountProjector) Project(
 	ctx context.Context, event eventhorizon.Event, entity eventhorizon.Entity) (ret eventhorizon.Entity, err error) {
 
-	ret = entity
-	err = o.Apply(event, entity.(*Account))
+	if err = o.Apply(event, entity.(*Account)); err == nil {
+		if event.EventType() != AccountDeletedEvent {
+			ret = entity
+		}
+	}
 	return
 }
 

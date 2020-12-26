@@ -23,7 +23,7 @@ func NewAccountDefaultByPropNames(intSalt int) (ret *Account) {
 	ret.Email = fmt.Sprintf("Email %v", intSalt)
 	ret.Roles = []string{}
 	ret.Id = uuid.New()
-	ret.AggregateState = AccountAggregateStateTypes().Initial()
+	ret.AggregateState = fmt.Sprintf("AggregateState %v", intSalt)
 	ret.DeletedAt = utils.PtrTime(time.Now())
 	return
 }

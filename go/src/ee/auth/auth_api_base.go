@@ -6,17 +6,17 @@ import (
 )
 
 type Account struct {
-	Name                     *PersonName                `json:"name,omitempty" eh:"optional"`
-	Username                 string                     `json:"username,omitempty" eh:"optional"`
-	Password                 string                     `json:"password,omitempty" eh:"optional"`
-	Email                    string                     `json:"email,omitempty" eh:"optional"`
-	Roles                    []string                   `json:"roles,omitempty" eh:"optional"`
-	SentDisabledConfirmation bool                       `json:"sentDisabledConfirmation,omitempty" eh:"optional"`
-	SentEnabledConfirmation  bool                       `json:"sentEnabledConfirmation,omitempty" eh:"optional"`
-	Disabled                 bool                       `json:"disabled,omitempty" eh:"optional"`
-	Id                       uuid.UUID                  `json:"id,omitempty" eh:"optional"`
-	AggregateState           *AccountAggregateStateType `json:"aggregateState,omitempty" eh:"optional"`
-	DeletedAt                *time.Time                 `json:"deletedAt,omitempty" eh:"optional"`
+	Name                     *PersonName `json:"name,omitempty" eh:"optional"`
+	Username                 string      `json:"username,omitempty" eh:"optional"`
+	Password                 string      `json:"password,omitempty" eh:"optional"`
+	Email                    string      `json:"email,omitempty" eh:"optional"`
+	Roles                    []string    `json:"roles,omitempty" eh:"optional"`
+	SentDisabledConfirmation bool        `json:"sentDisabledConfirmation,omitempty" eh:"optional"`
+	SentEnabledConfirmation  bool        `json:"sentEnabledConfirmation,omitempty" eh:"optional"`
+	Disabled                 bool        `json:"disabled,omitempty" eh:"optional"`
+	Id                       uuid.UUID   `json:"id,omitempty" eh:"optional"`
+	AggregateState           string      `json:"aggregateState,omitempty" eh:"optional"`
+	DeletedAt                *time.Time  `json:"deletedAt,omitempty" eh:"optional"`
 }
 
 func NewAccountDefault() (ret *Account) {

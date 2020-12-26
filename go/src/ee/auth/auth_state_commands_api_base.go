@@ -46,8 +46,10 @@ func (o *AccountAggregateInitialExecutor) StateType() (ret *AccountAggregateStat
 }
 
 func (o *AccountAggregateInitialExecutor) Execute(cmd eventhorizon.Command, account *Account, store eh.AggregateStoreEvent) (err error) {
-	if err = o.CommandsPreparer(cmd, account); err != nil {
-		return
+	if o.CommandsPreparer != nil {
+		if err = o.CommandsPreparer(cmd, account); err != nil {
+			return
+		}
 	}
 
 	switch cmd.CommandType() {
@@ -60,13 +62,6 @@ func (o *AccountAggregateInitialExecutor) Execute(cmd eventhorizon.Command, acco
 }
 
 func (o *AccountAggregateInitialExecutor) SetupCommandHandler() (err error) {
-	o.CommandsPreparer = func(cmd eventhorizon.Command, entity *Account) (err error) {
-		if entity.DeletedAt != nil {
-			err = eh.CommandError{Err: eh.ErrAggregateDeleted, Cmd: cmd, Entity: entity}
-		}
-		return
-	}
-
 	o.CreateHandler = func(command *CreateAccount, entity *Account, store eh.AggregateStoreEvent) (err error) {
 		store.AppendEvent(AccountCreatedEvent, &AccountCreated{
 			Name:     command.Name,
@@ -106,21 +101,16 @@ func (o *AccountAggregateDeletedExecutor) StateType() (ret *AccountAggregateStat
 }
 
 func (o *AccountAggregateDeletedExecutor) Execute(cmd eventhorizon.Command, account *Account, store eh.AggregateStoreEvent) (err error) {
-	if err = o.CommandsPreparer(cmd, account); err != nil {
-		return
+	if o.CommandsPreparer != nil {
+		if err = o.CommandsPreparer(cmd, account); err != nil {
+			return
+		}
 	}
 	err = errors.New(fmt.Sprintf("Not supported command type '%v' in state 'Deleted' for entity '%v", cmd.CommandType(), account))
 	return
 }
 
 func (o *AccountAggregateDeletedExecutor) SetupCommandHandler() (err error) {
-	o.CommandsPreparer = func(cmd eventhorizon.Command, entity *Account) (err error) {
-		if entity.DeletedAt != nil {
-			err = eh.CommandError{Err: eh.ErrAggregateDeleted, Cmd: cmd, Entity: entity}
-		}
-		return
-	}
-
 	return
 }
 
@@ -173,8 +163,10 @@ func (o *AccountAggregateDisabledExecutor) StateType() (ret *AccountAggregateSta
 }
 
 func (o *AccountAggregateDisabledExecutor) Execute(cmd eventhorizon.Command, account *Account, store eh.AggregateStoreEvent) (err error) {
-	if err = o.CommandsPreparer(cmd, account); err != nil {
-		return
+	if o.CommandsPreparer != nil {
+		if err = o.CommandsPreparer(cmd, account); err != nil {
+			return
+		}
 	}
 
 	switch cmd.CommandType() {
@@ -189,13 +181,6 @@ func (o *AccountAggregateDisabledExecutor) Execute(cmd eventhorizon.Command, acc
 }
 
 func (o *AccountAggregateDisabledExecutor) SetupCommandHandler() (err error) {
-	o.CommandsPreparer = func(cmd eventhorizon.Command, entity *Account) (err error) {
-		if entity.DeletedAt != nil {
-			err = eh.CommandError{Err: eh.ErrAggregateDeleted, Cmd: cmd, Entity: entity}
-		}
-		return
-	}
-
 	o.EnableHandler = func(command *EnableAccount, entity *Account, store eh.AggregateStoreEvent) (err error) {
 		store.AppendEvent(AccountEnabledEvent, nil, time.Now())
 		return
@@ -267,8 +252,10 @@ func (o *AccountAggregateEnabledExecutor) StateType() (ret *AccountAggregateStat
 }
 
 func (o *AccountAggregateEnabledExecutor) Execute(cmd eventhorizon.Command, account *Account, store eh.AggregateStoreEvent) (err error) {
-	if err = o.CommandsPreparer(cmd, account); err != nil {
-		return
+	if o.CommandsPreparer != nil {
+		if err = o.CommandsPreparer(cmd, account); err != nil {
+			return
+		}
 	}
 
 	switch cmd.CommandType() {
@@ -285,13 +272,6 @@ func (o *AccountAggregateEnabledExecutor) Execute(cmd eventhorizon.Command, acco
 }
 
 func (o *AccountAggregateEnabledExecutor) SetupCommandHandler() (err error) {
-	o.CommandsPreparer = func(cmd eventhorizon.Command, entity *Account) (err error) {
-		if entity.DeletedAt != nil {
-			err = eh.CommandError{Err: eh.ErrAggregateDeleted, Cmd: cmd, Entity: entity}
-		}
-		return
-	}
-
 	o.DeleteHandler = func(command *DeleteAccount, entity *Account, store eh.AggregateStoreEvent) (err error) {
 		store.AppendEvent(AccountDeletedEvent, nil, time.Now())
 		return
@@ -356,8 +336,10 @@ func (o *AccountAggregateExistExecutor) StateType() (ret *AccountAggregateStateT
 }
 
 func (o *AccountAggregateExistExecutor) Execute(cmd eventhorizon.Command, account *Account, store eh.AggregateStoreEvent) (err error) {
-	if err = o.CommandsPreparer(cmd, account); err != nil {
-		return
+	if o.CommandsPreparer != nil {
+		if err = o.CommandsPreparer(cmd, account); err != nil {
+			return
+		}
 	}
 
 	switch cmd.CommandType() {
@@ -372,13 +354,6 @@ func (o *AccountAggregateExistExecutor) Execute(cmd eventhorizon.Command, accoun
 }
 
 func (o *AccountAggregateExistExecutor) SetupCommandHandler() (err error) {
-	o.CommandsPreparer = func(cmd eventhorizon.Command, entity *Account) (err error) {
-		if entity.DeletedAt != nil {
-			err = eh.CommandError{Err: eh.ErrAggregateDeleted, Cmd: cmd, Entity: entity}
-		}
-		return
-	}
-
 	o.DeleteHandler = func(command *DeleteAccount, entity *Account, store eh.AggregateStoreEvent) (err error) {
 		store.AppendEvent(AccountDeletedEvent, nil, time.Now())
 		return

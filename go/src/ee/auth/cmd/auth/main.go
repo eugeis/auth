@@ -110,7 +110,7 @@ func main() {
 				Name:        "fileStore",
 				Aliases:     []string{"f"},
 				Usage:       "folder for events",
-				Value:       "eventStore",
+				Value:       "store",
 				Destination: &folderEventStore,
 			}),
 			Action: func(c *cli.Context) (err error) {
