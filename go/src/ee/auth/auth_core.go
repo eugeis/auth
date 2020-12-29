@@ -2,6 +2,7 @@ package auth
 
 import (
 	"github.com/go-ee/utils/crypt"
+	"github.com/go-ee/utils/eh"
 )
 
 func (o *EsEngine) ActivatePasswordEncryption() {
@@ -22,4 +23,12 @@ func (o *AccountAggregateEngine) ActivatePasswordEncryption() {
 			}
 			return
 		})
+}
+
+func (o *AccountAggregateEngine) ImplementSendCommands() {
+	o.AggregateExecutors.Enabled.SendEnabledConfirmationHandler =
+		func(cmd *SendEnabledConfirmationAccount, account *Account, event eh.AggregateStoreEvent) (err error) {
+
+			return
+		}
 }

@@ -7,9 +7,9 @@ import (
 const (
 	AccountEnabledEvent                  eventhorizon.EventType = "AccountEnabled"
 	AccountSentDisabledConfirmationEvent eventhorizon.EventType = "AccountSentDisabledConfirmation"
+	AccountDeletedEvent                  eventhorizon.EventType = "AccountDeleted"
 	AccountDisabledEvent                 eventhorizon.EventType = "AccountDisabled"
 	AccountSentEnabledConfirmationEvent  eventhorizon.EventType = "AccountSentEnabledConfirmation"
-	AccountDeletedEvent                  eventhorizon.EventType = "AccountDeleted"
 	AccountUpdatedEvent                  eventhorizon.EventType = "AccountUpdated"
 	AccountCreatedEvent                  eventhorizon.EventType = "AccountCreated"
 	AccountLoggedEvent                   eventhorizon.EventType = "AccountLogged"

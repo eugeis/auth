@@ -36,7 +36,9 @@ object Auth : Comp({ namespace("ee.auth") }) {
             object Handler : AggregateHandler({
                 defaultState(state {
                     name("Initial")
+
                     executeAndProduce(create())
+
                     handle(eventOf(create())).ifTrue(disabled.yes()).to(Disabled)
                     handle(eventOf(create())).ifFalse(disabled.yes()).to(Enabled)
                 })
@@ -45,25 +47,29 @@ object Auth : Comp({ namespace("ee.auth") }) {
                 object Exist : State({
                     virtual()
                     executeAndProduce(update())
-                    handle(eventOf(update()))
-
                     executeAndProduce(delete())
+
+                    handle(eventOf(update()))
                     handle(eventOf(delete())).to(Deleted)
                 })
 
                 object Disabled : State({
                     superUnit(Exist)
+
                     executeAndProduce(enable)
                     executeAndProduce(sendDisabledConfirmation)
+
                     handle(eventOf(enable)).to(Enabled).produce(sendEnabledConfirmation)
                 })
 
                 object Enabled : State({
                     superUnit(Exist)
+
+                    executeAndProduce(delete())
                     executeAndProduce(disable)
                     executeAndProduce(sendEnabledConfirmation)
+
                     handle(eventOf(disable)).to(Disabled).produce(sendDisabledConfirmation)
-                    executeAndProduce(delete())
                     handle(eventOf(delete())).to(Deleted)
                 })
 
