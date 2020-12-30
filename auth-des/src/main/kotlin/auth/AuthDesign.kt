@@ -37,20 +37,20 @@ object Auth : Comp({ namespace("ee.auth") }) {
                 defaultState(state {
                     name("Initial")
 
-                    executeAndProduce(create())
+                    executeAndProduce(commandCreate())
 
-                    handle(eventOf(create())).ifTrue(disabled.yes()).to(Disabled)
-                    handle(eventOf(create())).ifFalse(disabled.yes()).to(Enabled)
+                    handle(eventOf(commandCreate())).ifTrue(disabled.yes()).to(Disabled)
+                    handle(eventOf(commandCreate())).ifFalse(disabled.yes()).to(Enabled)
                 })
             }) {
 
                 object Exist : State({
                     virtual()
-                    executeAndProduce(update())
-                    executeAndProduce(delete())
+                    executeAndProduce(commandUpdate())
+                    executeAndProduce(commandDelete())
 
-                    handle(eventOf(update()))
-                    handle(eventOf(delete())).to(Deleted)
+                    handle(eventOf(commandUpdate()))
+                    handle(eventOf(commandDelete())).to(Deleted)
                 })
 
                 object Disabled : State({
@@ -65,12 +65,12 @@ object Auth : Comp({ namespace("ee.auth") }) {
                 object Enabled : State({
                     superUnit(Exist)
 
-                    executeAndProduce(delete())
+                    executeAndProduce(commandDelete())
                     executeAndProduce(disable)
                     executeAndProduce(sendEnabledConfirmation)
 
                     handle(eventOf(disable)).to(Disabled).produce(sendDisabledConfirmation)
-                    handle(eventOf(delete())).to(Deleted)
+                    handle(eventOf(commandDelete())).to(Deleted)
                 })
 
                 object Deleted : State()
