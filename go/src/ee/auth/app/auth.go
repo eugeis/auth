@@ -7,6 +7,7 @@ import (
 	"github.com/go-ee/utils/eh/app"
 	"github.com/go-ee/utils/net"
 	"github.com/google/uuid"
+	"path/filepath"
 )
 
 type Auth struct {
@@ -35,16 +36,18 @@ func (o *Auth) Start() (err error) {
 	}
 
 	if o.Secure {
-		o.Jwt = o.initJwtController(authRouter.AccountRouter.QueryHandler.QueryRepository)
+		if o.Jwt, err = o.initJwtController(authRouter.AccountRouter.QueryHandler.QueryRepository); err != nil {
+			return
+		}
 	}
 
 	err = o.StartServer()
 	return
 }
 
-func (o *Auth) initJwtController(accounts *auth.AccountQueryRepository) (ret *net.JwtController) {
-	//TODO use appName, provide help how to generate RSA files first
-	return net.NewJwtControllerApp("app",
+func (o *Auth) initJwtController(accounts *auth.AccountQueryRepository) (ret *net.JwtController, err error) {
+	return net.NewJwtControllerApp(
+		filepath.Join(o.WorkingFolder, "certs"), o.AppName,
 		func(credentials net.UserCredentials) (ret interface{}, err error) {
 			var account *auth.Account
 			id, _ := uuid.Parse(credentials.Username)

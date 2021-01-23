@@ -11,12 +11,13 @@ import (
 	"github.com/urfave/cli"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 )
 
 func main() {
 	const productName = "Auth"
 
-	var name, serverAddress, mongoUrl, targetFile, folderEventStore string
+	var name, serverAddress, mongoUrl, targetFile, workingFolder, folderEventStore string
 	var debug, secure bool
 	var serverPort int
 
@@ -43,6 +44,12 @@ func main() {
 			Usage:       "server port",
 			Value:       7070,
 			Destination: &serverPort,
+		}, &cli.StringFlag{
+			Name:        "workingFolder",
+			Aliases:     []string{"w"},
+			Usage:       "working folder",
+			Value:       "",
+			Destination: &workingFolder,
 		}, &cli.BoolFlag{
 			Name:        "debug",
 			Aliases:     []string{"d"},
@@ -79,8 +86,9 @@ func main() {
 			Action: func(c *cli.Context) (err error) {
 				Auth := appAuth.NewAuth(mongo.NewAppMongo(
 					&app.AppInfo{
-						AppName:     name,
-						ProductName: productName,
+						AppName:       name,
+						ProductName:   productName,
+						WorkingFolder: filepath.Dir(workingFolder),
 					}, &app.ServerConfig{
 						ServerAddress: serverAddress,
 						ServerPort:    serverPort,
@@ -94,8 +102,9 @@ func main() {
 			Flags: commonFlags,
 			Action: func(c *cli.Context) (err error) {
 				Auth := appAuth.NewAuth(memory.NewAppMemory(&app.AppInfo{
-					AppName:     name,
-					ProductName: productName,
+					AppName:       name,
+					ProductName:   productName,
+					WorkingFolder: filepath.Dir(workingFolder),
 				}, &app.ServerConfig{
 					ServerAddress: serverAddress,
 					ServerPort:    serverPort,
@@ -116,8 +125,9 @@ func main() {
 			Action: func(c *cli.Context) (err error) {
 				Auth := appAuth.NewAuth(
 					filestore.NewAppFileStore(&app.AppInfo{
-						AppName:     name,
-						ProductName: productName,
+						AppName:       name,
+						ProductName:   productName,
+						WorkingFolder: filepath.Dir(workingFolder),
 					}, &app.ServerConfig{
 						ServerAddress: serverAddress,
 						ServerPort:    serverPort,
