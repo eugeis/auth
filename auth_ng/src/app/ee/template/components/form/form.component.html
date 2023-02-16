@@ -1,0 +1,29 @@
+<mat-action-row [formGroup]="templateService.form">
+    <mat-form-field *ngFor="let controlName of templateService.formArrayName; let i = index">
+        <mat-label>{{controlName.toUpperCase()}}</mat-label>
+        <ng-container *ngIf="templateService.formArrayType[i] == 'enum'; else dateContent">
+            <mat-select (valueChange)="templateService.changeValue($event, templateService.formArrayName[i])" [(value)]="templateService.selected[i]">
+                <div *ngFor="let item of templateService.formEnumElement[i]">
+                    <mat-option [value]="item">{{item}}</mat-option>
+                </div>
+            </mat-select>
+        </ng-container>
+
+        <ng-template #dateContent>
+            <ng-container *ngIf="templateService.formArrayType[i] == 'datetime'; else stringContent">
+                <input matInput type="date"
+                       [id] = controlName
+                       [formControlName]=controlName>
+            </ng-container>
+        </ng-template>
+
+        <ng-template #stringContent>
+            <input matInput
+                   [id] = controlName
+                   [formControlName]=controlName />
+        </ng-template>
+
+    </mat-form-field>
+</mat-action-row>
+
+<app-button [isEdit]="isEdit" [itemIndex]="itemIndex"></app-button>

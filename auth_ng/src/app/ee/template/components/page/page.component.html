@@ -1,0 +1,32 @@
+<mat-sidenav-container>
+    <mat-sidenav #drawer
+                 [mode]="'side'" [fixedInViewport]="true">
+        <mat-nav-list>
+            <a *ngFor="let pageName of pageElement"
+               mat-list-item
+               routerLinkActive="active-link"
+               [routerLink]="'/' + pageName.toLowerCase()"
+            >{{pageName.toUpperCase()}}</a>
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <mat-toolbar>
+            <button mat-icon-button (click)="drawer.toggle()">
+                <mat-icon>menu</mat-icon>
+            </button>
+            <span>{{pageName}}</span>
+        </mat-toolbar>
+
+        <nav mat-tab-nav-bar>
+            <div *ngFor="let pageTabsName of tabElement">
+                <a mat-tab-link
+                   [routerLink]="'/' + pageElement[0].toLowerCase() + '/' + pageTabsName.toLowerCase()"
+                   routerLinkActive="active-link"
+                >{{pageTabsName.toUpperCase()}}
+                </a>
+            </div>
+        </nav>
+
+    </mat-sidenav-content>
+</mat-sidenav-container>
