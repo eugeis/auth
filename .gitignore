@@ -13,3 +13,10 @@
 /build/
 /auth-des/build/
 /go/src/.idea/
+/auth-des/.settings/
+/auth-des/.classpath
+/auth-des/.project
+/.settings/
+/.project
+/.classpath
+/go/src/ee/auth/.idea/
